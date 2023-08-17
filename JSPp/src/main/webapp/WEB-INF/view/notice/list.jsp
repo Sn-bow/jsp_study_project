@@ -4,109 +4,108 @@
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.DriverManager"%>
 <%@page import="java.sql.Connection"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"  %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
-	// JDBC 와같은 외부 라이브러리를 사용하기 위해서는 기존의 Build Path 를 이용해서 라이브러리를 추가하는것이 아니라 
-	// src -> webapp -> WEB-INF -> lib 폴더 안에 ojdbc8.jar 파일을 넣어주면 된다.
-	// 해당 폴더안에 넣어주는 이유는 JSPp 프로젝트에서 컴파일이 된후 해당 프로젝트에서 실행되는게 아니라 톰캣서버에서 배포되어 실행되기 때문이다
-	// 그렇게 되면 톰캣에서 실행될때 build path부분이 달라지게 된다.
-	// 라이브러리가 배포될때 같이 배포되어야 되기때문에 그렇다
-	// 이는 자바실행환경 및 톰캣 과같은 라이브러리는 톰캣에 배포되어 실행되는 실행환경에도 존재하기 떄문이다.
-
+// JDBC 와같은 외부 라이브러리를 사용하기 위해서는 기존의 Build Path 를 이용해서 라이브러리를 추가하는것이 아니라 
+// src -> webapp -> WEB-INF -> lib 폴더 안에 ojdbc8.jar 파일을 넣어주면 된다.
+// 해당 폴더안에 넣어주는 이유는 JSPp 프로젝트에서 컴파일이 된후 해당 프로젝트에서 실행되는게 아니라 톰캣서버에서 배포되어 실행되기 때문이다
+// 그렇게 되면 톰캣에서 실행될때 build path부분이 달라지게 된다.
+// 라이브러리가 배포될때 같이 배포되어야 되기때문에 그렇다
+// 이는 자바실행환경 및 톰캣 과같은 라이브러리는 톰캣에 배포되어 실행되는 실행환경에도 존재하기 떄문이다.
 %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>코딩 전문가를 만들기 위한 온라인 강의 시스템</title>
-    <meta charset="UTF-8">
-    <title>공지사항목록</title>
-    
-    <link href="/css/customer/layout.css" type="text/css" rel="stylesheet" />
-    <style>
-    
-        #visual .content-container{	
-            height:inherit;
-            display:flex; 
-            align-items: center;
-            
-            background: url("../../images/customer/visual.png") no-repeat center;
-        }
-    </style>
+<title>코딩 전문가를 만들기 위한 온라인 강의 시스템</title>
+<meta charset="UTF-8">
+<title>공지사항목록</title>
+
+<link href="/css/customer/layout.css" type="text/css" rel="stylesheet" />
+<style>
+#visual .content-container {
+	height: inherit;
+	display: flex;
+	align-items: center;
+	background: url("../../images/customer/visual.png") no-repeat center;
+}
+</style>
 </head>
 
 <body>
-    <!-- header 부분 -->
+	<!-- header 부분 -->
 
-    <header id="header">
-        
-        <div class="content-container">
-            <!-- ---------------------------<header>--------------------------------------- -->
+	<header id="header">
 
-            <h1 id="logo">
-                <a href="/index.html">
-                    <img src="/images/logo.png" alt="뉴렉처 온라인" />
+		<div class="content-container">
+			<!-- ---------------------------<header>--------------------------------------- -->
 
-                </a>
-            </h1>
+			<h1 id="logo">
+				<a href="/index.html"> <img src="/images/logo.png" alt="뉴렉처 온라인" />
 
-            <section>
-                <h1 class="hidden">헤더</h1>
+				</a>
+			</h1>
 
-                <nav id="main-menu">
-                    <h1>메인메뉴</h1>
-                    <ul>
-                        <li><a href="/guide">학습가이드</a></li>
+			<section>
+				<h1 class="hidden">헤더</h1>
 
-                        <li><a href="/course">강좌선택</a></li>
-                        <li><a href="/answeris/index">AnswerIs</a></li>
-                    </ul>
-                </nav>
+				<nav id="main-menu">
+					<h1>메인메뉴</h1>
+					<ul>
+						<li><a href="/guide">학습가이드</a></li>
 
-                <div class="sub-menu">
+						<li><a href="/course">강좌선택</a></li>
+						<li><a href="/answeris/index">AnswerIs</a></li>
+					</ul>
+				</nav>
 
-                    <section id="search-form">
-                        <h1>강좌검색 폼</h1>
-                        <form action="/course">
-                            <fieldset>
-                                <legend>과정검색필드</legend>
-                                <label>과정검색</label>
-                                <input type="text" name="q" value="" />
-                                <input type="submit" value="검색" />
-                            </fieldset>
-                        </form>
-                    </section>
+				<div class="sub-menu">
 
-                    <nav id="acount-menu">
-                        <h1 class="hidden">회원메뉴</h1>
-                        <ul>
-                            <li><a href="/index.html">HOME</a></li>
-                            <li><a href="/member/login.html">로그인</a></li>
-                            <li><a href="/member/agree.html">회원가입</a></li>
-                        </ul>
-                    </nav>
+					<section id="search-form">
+						<h1>강좌검색 폼</h1>
+						<form action="/course">
+							<fieldset>
+								<legend>과정검색필드</legend>
+								<label>과정검색</label> <input type="text" name="q" value="" /> <input
+									type="submit" value="검색" />
+							</fieldset>
+						</form>
+					</section>
 
-                    <nav id="member-menu" class="linear-layout">
-                        <h1 class="hidden">고객메뉴</h1>
-                        <ul class="linear-layout">
-                            <li><a href="/member/home"><img src="/images/txt-mypage.png" alt="마이페이지" /></a></li>
-                            <li><a href="/notice/list.html"><img src="/images/txt-customer.png" alt="고객센터" /></a></li>
-                        </ul>
-                    </nav>
+					<nav id="acount-menu">
+						<h1 class="hidden">회원메뉴</h1>
+						<ul>
+							<li><a href="/index.html">HOME</a></li>
+							<li><a href="/member/login.html">로그인</a></li>
+							<li><a href="/member/agree.html">회원가입</a></li>
+						</ul>
+					</nav>
 
-                </div>
-            </section>
+					<nav id="member-menu" class="linear-layout">
+						<h1 class="hidden">고객메뉴</h1>
+						<ul class="linear-layout">
+							<li><a href="/member/home"><img
+									src="/images/txt-mypage.png" alt="마이페이지" /></a></li>
+							<li><a href="/notice/list.html"><img
+									src="/images/txt-customer.png" alt="고객센터" /></a></li>
+						</ul>
+					</nav>
 
-        </div>
-        
-    </header>
+				</div>
+			</section>
+
+		</div>
+
+	</header>
 
 	<!-- --------------------------- <visual> --------------------------------------- -->
 	<!-- visual 부분 -->
-	
+
 	<div id="visual">
 		<div class="content-container"></div>
 	</div>
@@ -124,74 +123,75 @@
 				<nav class="menu text-menu first margin-top">
 					<h1>고객센터메뉴</h1>
 					<ul>
-						<li><a class="current"  href="/customer/notice">공지사항</a></li>
-						<li><a class=""  href="/customer/faq">자주하는 질문</a></li>
+						<li><a class="current" href="/customer/notice">공지사항</a></li>
+						<li><a class="" href="/customer/faq">자주하는 질문</a></li>
 						<li><a class="" href="/customer/question">수강문의</a></li>
 						<li><a class="" href="/customer/event">이벤트</a></li>
-						
+
 					</ul>
 				</nav>
 
 
-	<nav class="menu">
-		<h1>협력업체</h1>
-		<ul>
-			<li><a target="_blank" href="http://www.notepubs.com"><img src="/images/notepubs.png" alt="노트펍스" /></a></li>
-			<li><a target="_blank" href="http://www.namoolab.com"><img src="/images/namoolab.png" alt="나무랩연구소" /></a></li>
-						
-		</ul>
-	</nav>
-					
+				<nav class="menu">
+					<h1>협력업체</h1>
+					<ul>
+						<li><a target="_blank" href="http://www.notepubs.com"><img
+								src="/images/notepubs.png" alt="노트펍스" /></a></li>
+						<li><a target="_blank" href="http://www.namoolab.com"><img
+								src="/images/namoolab.png" alt="나무랩연구소" /></a></li>
+
+					</ul>
+				</nav>
+
 			</aside>
 			<!-- --------------------------- main --------------------------------------- -->
 
 
 
-		<main class="main">
-			<h2 class="main title">공지사항</h2>
-			
-			<div class="breadcrumb">
-				<h3 class="hidden">경로</h3>
-				<ul>
-					<li>home</li>
-					<li>고객센터</li>
-					<li>공지사항</li>
-				</ul>
-			</div>
-			
-			<div class="search-form margin-top first align-right">
-				<h3 class="hidden">공지사항 검색폼</h3>
-				<form class="table-form">
-					<fieldset>
-						<legend class="hidden">공지사항 검색 필드</legend>
-						<label class="hidden">검색분류</label>
-						<select name="f">
-							<option  value="title">제목</option>
-							<option  value="writerId">작성자</option>
-						</select> 
-						<label class="hidden">검색어</label>
-						<input type="text" name="q" value=""/>
-						<input class="btn btn-search" type="submit" value="검색" />
-					</fieldset>
-				</form>
-			</div>
-			
-			<div class="notice margin-top">
-				<h3 class="hidden">공지사항 목록</h3>
-				<table class="table">
-					<thead>
-						<tr>
-							<th class="w60">번호</th>
-							<th class="expand">제목</th>
-							<th class="w100">작성자</th>
-							<th class="w100">작성일</th>
-							<th class="w60">조회수</th>
-						</tr>
-					</thead>
-					<tbody>
-					
-				
-					<c:forEach var="n" items="${list}" begin="0" end="5" varStatus="st">
+			<main class="main">
+				<h2 class="main title">공지사항</h2>
+
+				<div class="breadcrumb">
+					<h3 class="hidden">경로</h3>
+					<ul>
+						<li>home</li>
+						<li>고객센터</li>
+						<li>공지사항</li>
+					</ul>
+				</div>
+
+				<div class="search-form margin-top first align-right">
+					<h3 class="hidden">공지사항 검색폼</h3>
+					<form class="table-form">
+						<fieldset>
+							<legend class="hidden">공지사항 검색 필드</legend>
+							<label class="hidden">검색분류</label> <select name="f">
+								<option ${(param.f == "title") ? "selected" : ""} value="title">제목</option>
+								<option ${(param.f == "writer_id") ? "selected" : ""}
+									value="writer_id">작성자</option>
+							</select> <label class="hidden">검색어</label> <input type="text" name="q"
+								value="${param.q}" /> <input class="btn btn-search"
+								type="submit" value="검색" />
+						</fieldset>
+					</form>
+				</div>
+
+				<div class="notice margin-top">
+					<h3 class="hidden">공지사항 목록</h3>
+					<table class="table">
+						<thead>
+							<tr>
+								<th class="w60">번호</th>
+								<th class="expand">제목</th>
+								<th class="w100">작성자</th>
+								<th class="w100">작성일</th>
+								<th class="w60">조회수</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							<!-- 
+				<c:forEach var="n" items="${list}" begin="0" end="5" varStatus="st">
 						<tr>
 							<td>${st.index} / ${n.id}</td>
 							<td class="title indent text-align-left"><a href="/notice/detail?id=${n.id}">${n.title}</a></td>
@@ -202,9 +202,22 @@
 							<td>${n.hit}</td>
 						</tr>
 					</c:forEach>
-				
-				
-					<%-- <%
+				 -->
+							<c:forEach var="n" items="${list}">
+								<tr>
+									<td>${n.id}</td>
+									<td class="title indent text-align-left"><a
+										href="/notice/detail?id=${n.id}">${n.title}</a></td>
+									<td>${n.writerId}</td>
+									<td><fmt:formatDate pattern="yyyy년MM월dd일"
+											value="${n.regDate}" /></td>
+									<td><fmt:formatNumber type="number" pattern="##,###"
+											value="${n.hit}" /></td>
+								</tr>
+							</c:forEach>
+
+
+							<%-- <%
 					List<Notice> list = (List<Notice>)request.getAttribute("list");
 					for(Notice n : list) {
 						pageContext.setAttribute("n", n);
@@ -220,90 +233,100 @@
 					</tr>
 					
 					<% } %> --%>
-					
-					</tbody>
-				</table>
-			</div>
-			
-			<div class="indexer margin-top align-right">
-				<h3 class="hidden">현재 페이지</h3>
-				<div><span class="text-orange text-strong">1</span> / 1 pages</div>
-			</div>
 
-			<div class="margin-top align-center pager">	
-		
-	<div>
-	
-	
-	<c:set var="page" value="${param.p == null ? 1 : param.p }" />
-	<c:set var="startNum" value="${page-(page-1)%5 }" />
-	<c:set var="lastNum" value="23" />
-		
-		<c:if test="${startNum > 1 }">
-			<a href="?p=${startNum-1}&t=&q=" class="btn btn-prev">이전</a>
-		</c:if>
-		<c:if test="${startNum <= 1 }">
-			<span class="btn btn-prev" onclick="alert('이전 페이지가 없습니다.');">이전</span>
-		</c:if>
-	</div>
-	
-	
-	
-	<ul class="-list- center">
-	<c:forEach var="i" begin="0" end="4" >
-		<li><a class="-text- orange bold" href="?p=${i + startNum}&t=&q=" >${i + startNum}</a></li>
-				</c:forEach>
-	</ul>
-	<div>
-			<c:if test="${startNum + 5 < lastNum}">
-				<a href="?p=${startNum+5}&t=&q=" class="btn btn-next">다음</a>
-			</c:if>
-			<c:if test="${startNum + 5 >= lastNum}">	
-				<span class="btn btn-next" onclick="alert('다음 페이지가 없습니다.');">다음</span>
-			</c:if>
-	</div>
-	
-			</div>
-		</main>
-		
-			
+						</tbody>
+					</table>
+				</div>
+
+				<c:set var="page" value="${empty param.p ? 1 : param.p }" />
+				<c:set var="startNum" value="${page-(page-1) % 5}" />
+				<c:set var="lastNum"
+					value="${fn:substringBefore(Math.ceil(count / 10), '.')}" />
+
+				<div class="indexer margin-top align-right">
+					<h3 class="hidden">현재 페이지</h3>
+					<!-- empty는 뒤에 오는 값이 null 이거나 "" 빈문자열일 경우 참을 나타낸다 -->
+					<div>
+						<span class="text-orange text-strong">${empty param.p ? 1 : param.p}</span>
+						/ ${lastNum} pages
+					</div>
+				</div>
+
+				<div class="margin-top align-center pager">
+
+					<div>
+						<c:if test="${startNum > 1 }">
+							<a href="?p=${startNum-1}&t=&q=" class="btn btn-prev">이전</a>
+						</c:if>
+						<c:if test="${startNum <= 1 }">
+							<span class="btn btn-prev" onclick="alert('이전 페이지가 없습니다.');">이전</span>
+						</c:if>
+					</div>
+
+
+
+					<ul class="-list- center">
+						<c:forEach var="i" begin="0" end="4">
+							<c:if test="${(startNum + i) <= lastNum }">
+								<li><a
+									class="-text- ${(page == (startNum + i)) ? 'orange' : '' } bold"
+									href="?p=${i + startNum}&f=${param.f}&q=${param.q}">${i + startNum}</a></li>
+							</c:if>
+						</c:forEach>
+					</ul>
+					<div>
+						<c:if test="${startNum + 4 < lastNum}">
+							<a href="?p=${startNum+5}&t=&q=" class="btn btn-next">다음</a>
+						</c:if>
+						<c:if test="${startNum + 4 >= lastNum}">
+							<span class="btn btn-next" onclick="alert('다음 페이지가 없습니다.');">다음</span>
+						</c:if>
+					</div>
+
+				</div>
+			</main>
+
+
 		</div>
 	</div>
 
-    <!-- ------------------- <footer> --------------------------------------- -->
+	<!-- ------------------- <footer> --------------------------------------- -->
 
 
 
-        <footer id="footer">
-            <div class="content-container">
-                <h2 id="footer-logo"><img src="/images/logo-footer.png" alt="회사정보"></h2>
-    
-                <div id="company-info">
-                    <dl>
-                        <dt>주소:</dt>
-                        <dd>서울특별시 </dd>
-                        <dt>관리자메일:</dt>
-                        <dd>admin@newlecture.com</dd>
-                    </dl>
-                    <dl>
-                        <dt>사업자 등록번호:</dt>
-                        <dd>111-11-11111</dd>
-                        <dt>통신 판매업:</dt>
-                        <dd>신고제 1111 호</dd>
-                    </dl>
-                    <dl>
-                        <dt>상호:</dt>
-                        <dd>뉴렉처</dd>
-                        <dt>대표:</dt>
-                        <dd>홍길동</dd>
-                        <dt>전화번호:</dt>
-                        <dd>111-1111-1111</dd>
-                    </dl>
-                    <div id="copyright" class="margin-top">Copyright ⓒ newlecture.com 2012-2014 All Right Reserved.
-                        Contact admin@newlecture.com for more information</div>
-                </div>
-            </div>
-        </footer>
-    </body>
-    
-    </html>
+	<footer id="footer">
+		<div class="content-container">
+			<h2 id="footer-logo">
+				<img src="/images/logo-footer.png" alt="회사정보">
+			</h2>
+
+			<div id="company-info">
+				<dl>
+					<dt>주소:</dt>
+					<dd>서울특별시</dd>
+					<dt>관리자메일:</dt>
+					<dd>admin@newlecture.com</dd>
+				</dl>
+				<dl>
+					<dt>사업자 등록번호:</dt>
+					<dd>111-11-11111</dd>
+					<dt>통신 판매업:</dt>
+					<dd>신고제 1111 호</dd>
+				</dl>
+				<dl>
+					<dt>상호:</dt>
+					<dd>뉴렉처</dd>
+					<dt>대표:</dt>
+					<dd>홍길동</dd>
+					<dt>전화번호:</dt>
+					<dd>111-1111-1111</dd>
+				</dl>
+				<div id="copyright" class="margin-top">Copyright ⓒ
+					newlecture.com 2012-2014 All Right Reserved. Contact
+					admin@newlecture.com for more information</div>
+			</div>
+		</div>
+	</footer>
+</body>
+
+</html>
