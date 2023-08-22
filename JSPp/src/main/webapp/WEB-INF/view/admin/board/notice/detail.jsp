@@ -17,7 +17,7 @@
 	height: inherit;
 	display: flex;
 	align-items: center;
-	background: url("../../images/customer/visual.png") no-repeat center;
+	background: url("/images/mypage/visual.png") no-repeat center;
 }
 </style>
 </head>
@@ -66,8 +66,19 @@
 						<h1 class="hidden">회원메뉴</h1>
 						<ul>
 							<li><a href="/index.html">HOME</a></li>
-							<li><a href="/member/login.html">로그인</a></li>
-							<li><a href="/member/agree.html">회원가입</a></li>
+
+
+
+							<li>
+								<form action="/logout" method="post">
+									<input type="hidden" name="" value="" /> <input type="submit"
+										value="로그아웃"
+										style="border: none; background: none; vertical-align: middle; font-size: 10px; color: #979797; font-weight: bold;" />
+
+								</form>
+							</li>
+
+							<li><a href="/member/agree">회원가입</a></li>
 						</ul>
 					</nav>
 
@@ -103,28 +114,21 @@
 
 
 			<aside class="aside">
-				<h1>고객센터</h1>
+				<h1>ADMIN PAGE</h1>
 
 				<nav class="menu text-menu first margin-top">
-					<h1>고객센터메뉴</h1>
+					<h1>마이페이지</h1>
 					<ul>
-						<li><a class="current" href="/customer/notice">공지사항</a></li>
-						<li><a class="" href="/customer/faq">자주하는 질문</a></li>
-						<li><a class="" href="/customer/question">수강문의</a></li>
-						<li><a class="" href="/customer/event">이벤트</a></li>
-
+						<li><a href="/admin/index.html">관리자홈</a></li>
+						<li><a href="/teacher/index.html">선생님페이지</a></li>
+						<li><a href="/student/index.html">수강생페이지</a></li>
 					</ul>
 				</nav>
 
-
-				<nav class="menu">
-					<h1>협력업체</h1>
+				<nav class="menu text-menu">
+					<h1>알림관리</h1>
 					<ul>
-						<li><a target="_blank" href="http://www.notepubs.com"><img
-								src="/images/notepubs.png" alt="노트펍스" /></a></li>
-						<li><a target="_blank" href="http://www.namoolab.com"><img
-								src="/images/namoolab.png" alt="나무랩연구소" /></a></li>
-
+						<li><a href="/admin/board/notice/list.html">공지사항</a></li>
 					</ul>
 				</nav>
 
@@ -157,35 +161,30 @@
 							</tr>
 							<tr>
 								<th>작성일</th>
-								<td class="text-align-left text-indent" colspan="3"><fmt:formatDate
-										pattern="yyyy년MM월dd일 hh시mm분ss초" value="${n.regDate}" /></td>
+								<td class="text-align-left text-indent" colspan="3">${n.regDate}
+								</td>
 							</tr>
 							<tr>
 								<th>작성자</th>
 								<td>${n.writerId}</td>
 								<th>조회수</th>
 								<td><fmt:formatNumber type="number" pattern="##,###"
-										value="${n.hit}" /> <%-- <fmt:formatNumber value="${n.hit}" /> --%>
-								</td>
+										value="${n.hit}" /></td>
 							</tr>
 							<tr>
 								<th>첨부파일</th>
-								<td colspan="3" style="text-align: left; text-indent: 10px;">
-									<c:forTokens var="fileName" items="${n.files}" delims=","
-										varStatus="st">
-
+								<td colspan="3"><c:forTokens var="fileName"
+										items="${n.files}" delims="," varStatus="st">
 										<c:set var="style" value="" />
 										<c:if test="${fn:endsWith(fileName, '.zip')}">
 											<c:set var="style" value="font-weight: bold; color: red;" />
 										</c:if>
+
 										<a download href="/upload/${fileName}" style="${style}">${fn:toUpperCase(fileName)}</a>
 										<c:if test="${!st.last}">
 											/
 										</c:if>
-									</c:forTokens>
-
-
-								</td>
+									</c:forTokens></td>
 							</tr>
 							<tr class="content">
 								<td colspan="4">${n.content}</td>
@@ -195,33 +194,27 @@
 				</div>
 
 				<div class="margin-top text-align-center">
-					<a class="btn btn-list" href="/notice/list">목록</a>
+					<a class="btn-text btn-cancel" href="list">목록</a> 
+					<a class="btn-text btn-default" href="edit.html">수정</a> 
+					<a class="btn-text btn-default" href="/list/id=${n.id}">삭제</a>
 				</div>
 
 				<div class="margin-top">
 					<table class="table border-top-default">
 						<tbody>
-
 							<tr>
 								<th>다음글</th>
 								<td colspan="3" class="text-align-left text-indent">다음글이
 									없습니다.</td>
 							</tr>
-
-
-
-
 							<tr>
 								<th>이전글</th>
 								<td colspan="3" class="text-align-left text-indent"><a
 									class="text-blue text-strong" href="">스프링 DI 예제 코드</a></td>
 							</tr>
-
-
 						</tbody>
 					</table>
 				</div>
-
 			</main>
 
 		</div>
@@ -267,6 +260,3 @@
 </body>
 
 </html>
-
-
-

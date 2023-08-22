@@ -1,4 +1,4 @@
-package com.newlecture.web.controller;
+package com.newlecture.web.controller.notice;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.newlecture.web.entity.Notice;
+import com.newlecture.web.entity.NoticeView;
 import com.newlecture.web.service.NoticeService;
 
 @WebServlet("/notice/list")
-public class NoticeListController extends HttpServlet {
+public class ListController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -28,7 +28,7 @@ public class NoticeListController extends HttpServlet {
 		String query = query_ != null && !query_.equals("") ? query_ : "";
 
 		NoticeService service = new NoticeService();
-		List<Notice> noticeList = service.getNoticeList(field, query, page);
+		List<NoticeView> noticeList = service.getNoticeList(field, query, page);
 		int count = service.getNoticeCount(field, query);
 
 		req.setAttribute("list", noticeList);

@@ -1,17 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%
-// JDBC 와같은 외부 라이브러리를 사용하기 위해서는 기존의 Build Path 를 이용해서 라이브러리를 추가하는것이 아니라 
-// src -> webapp -> WEB-INF -> lib 폴더 안에 ojdbc8.jar 파일을 넣어주면 된다.
-// 해당 폴더안에 넣어주는 이유는 JSPp 프로젝트에서 컴파일이 된후 해당 프로젝트에서 실행되는게 아니라 톰캣서버에서 배포되어 실행되기 때문이다
-// 그렇게 되면 톰캣에서 실행될때 build path부분이 달라지게 된다.
-// 라이브러리가 배포될때 같이 배포되어야 되기때문에 그렇다
-// 이는 자바실행환경 및 톰캣 과같은 라이브러리는 톰캣에 배포되어 실행되는 실행환경에도 존재하기 떄문이다.
-%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
 <!DOCTYPE html>
 <html>
 
@@ -26,7 +17,7 @@
 	height: inherit;
 	display: flex;
 	align-items: center;
-	background: url("../../images/customer/visual.png") no-repeat center;
+	background: url("/images/mypage/visual.png") no-repeat center;
 }
 </style>
 </head>
@@ -112,28 +103,21 @@
 
 
 			<aside class="aside">
-				<h1>고객센터</h1>
+				<h1>ADMIN PAGE</h1>
 
 				<nav class="menu text-menu first margin-top">
-					<h1>고객센터메뉴</h1>
+					<h1>마이페이지</h1>
 					<ul>
-						<li><a class="current" href="/customer/notice">공지사항</a></li>
-						<li><a class="" href="/customer/faq">자주하는 질문</a></li>
-						<li><a class="" href="/customer/question">수강문의</a></li>
-						<li><a class="" href="/customer/event">이벤트</a></li>
-
+						<li><a href="/admin/index.html">관리자홈</a></li>
+						<li><a href="/teacher/index.html">선생님페이지</a></li>
+						<li><a href="/student/index.html">수강생페이지</a></li>
 					</ul>
 				</nav>
 
-
-				<nav class="menu">
-					<h1>협력업체</h1>
+				<nav class="menu text-menu">
+					<h1>알림관리</h1>
 					<ul>
-						<li><a target="_blank" href="http://www.notepubs.com"><img
-								src="/images/notepubs.png" alt="노트펍스" /></a></li>
-						<li><a target="_blank" href="http://www.namoolab.com"><img
-								src="/images/namoolab.png" alt="나무랩연구소" /></a></li>
-
+						<li><a href="/admin/board/notice/list.html">공지사항</a></li>
 					</ul>
 				</nav>
 
@@ -160,92 +144,74 @@
 						<fieldset>
 							<legend class="hidden">공지사항 검색 필드</legend>
 							<label class="hidden">검색분류</label> <select name="f">
-								<option ${(param.f == "title") ? "selected" : ""} value="title">제목</option>
-								<option ${(param.f == "writer_id") ? "selected" : ""}
-									value="writer_id">작성자</option>
+								<option value="title">제목</option>
+								<option value="writerId">작성자</option>
 							</select> <label class="hidden">검색어</label> <input type="text" name="q"
-								value="${param.q}" /> <input class="btn btn-search"
-								type="submit" value="검색" />
+								value="" /> <input class="btn btn-search" type="submit"
+								value="검색" />
 						</fieldset>
 					</form>
 				</div>
 
-				<div class="notice margin-top">
-					<h3 class="hidden">공지사항 목록</h3>
-					<table class="table">
-						<thead>
-							<tr>
-								<th class="w60">번호</th>
-								<th class="expand">제목</th>
-								<th class="w100">작성자</th>
-								<th class="w100">작성일</th>
-								<th class="w60">조회수</th>
-							</tr>
-						</thead>
-						<tbody>
-
-							<!-- 
-				<c:forEach var="n" items="${list}" begin="0" end="5" varStatus="st">
-						<tr>
-							<td>${st.index} / ${n.id}</td>
-							<td class="title indent text-align-left"><a href="/notice/detail?id=${n.id}">${n.title}</a></td>
-							<td>${n.writerId}</td>
-							<td>
-							<fmt:formatDate pattern="yyyy년MM월dd일 hh시mm분ss초" value="${n.regDate}" />
-							</td>
-							<td>${n.hit}</td>
-						</tr>
-					</c:forEach>
-				 -->
-							<c:forEach var="n" items="${list}">
+				<form action="list" method="post">
+					<div class="notice margin-top">
+						<h3 class="hidden">공지사항 목록</h3>
+						<table class="table">
+							<thead>
 								<tr>
-									<td>${n.id}</td>
-									<td class="title indent text-align-left"><a
-										href="/notice/detail?id=${n.id}">${n.title}
-											[${n.cmtCount}]</a></td>
-									<td>${n.writerId}</td>
-									<td><fmt:formatDate pattern="yyyy년MM월dd일"
-											value="${n.regDate}" /></td>
-									<td><fmt:formatNumber type="number" pattern="##,###"
-											value="${n.hit}" /></td>
+									<th class="w60">번호</th>
+									<th class="expand">제목</th>
+									<th class="w100">작성자</th>
+									<th class="w100">작성일</th>
+									<th class="w60">조회수</th>
+									<th class="w40">공개</th>
+									<th class="w40">삭제</th>
 								</tr>
-							</c:forEach>
+							</thead>
+							<tbody>
 
+								<c:forEach var="n" items="${list}">
+									<tr>
+										<td>${n.id}</td>
+										<td class="title indent text-align-left">
+											<a href="/admin/board/notice/detail?id=${n.id}">
+												${n.title} [${n.cmtCount}]
+											</a>
+										</td>
+										<td>${n.writerId}</td>
+										<td><fmt:formatDate pattern="yyyy년MM월dd일"
+												value="${n.regDate}" /></td>
+										<td><fmt:formatNumber type="number" pattern="##,###"
+												value="${n.hit}" /></td>
+										<td><input type="checkbox" name="open-id" value="${n.id}"></td>
+										<td><input type="checkbox" name="del-id" value="${n.id}"></td>
+									</tr>
+								</c:forEach>
 
-							<%-- <%
-					List<Notice> list = (List<Notice>)request.getAttribute("list");
-					for(Notice n : list) {
-						pageContext.setAttribute("n", n);
-					%>
-					<tr>
-						<td>${n.id}</td>
-						<td class="title indent text-align-left"><a href="/notice/detail?id=${n.id}">${n.title}</a></td>
-						<td>${n.writerId}</td>
-						<td>
-							${n.regDate}
-						</td>
-						<td>${n.hit}</td>
-					</tr>
-					
-					<% } %> --%>
-
-						</tbody>
-					</table>
-				</div>
-
-				<c:set var="page" value="${empty param.p ? 1 : param.p }" />
-				<c:set var="startNum" value="${page-(page-1) % 5}" />
-				<c:set var="lastNum"
-					value="${fn:substringBefore(Math.ceil(count / 10), '.')}" />
-
-				<div class="indexer margin-top align-right">
-					<h3 class="hidden">현재 페이지</h3>
-					<!-- empty는 뒤에 오는 값이 null 이거나 "" 빈문자열일 경우 참을 나타낸다 -->
-					<div>
-						<span class="text-orange text-strong">${empty param.p ? 1 : param.p}</span>
-						/ ${lastNum} pages
+							</tbody>
+						</table>
 					</div>
-				</div>
+
+					<c:set var="page" value="${empty param.p ? 1 : param.p }" />
+					<c:set var="startNum" value="${page-(page-1) % 5}" />
+					<c:set var="lastNum"
+						value="${fn:substringBefore(Math.ceil(count / 10), '.')}" />
+
+					<div class="indexer margin-top align-right">
+						<h3 class="hidden">현재 페이지</h3>
+						<!-- empty는 뒤에 오는 값이 null 이거나 "" 빈문자열일 경우 참을 나타낸다 -->
+						<div>
+							<span class="text-orange text-strong">${empty param.p ? 1 : param.p}</span>
+							/ ${lastNum} pages
+						</div>
+					</div>
+
+					<div class="text-align-right margin-top">
+						<input type="submit" class="btn-text btn-default" name="cmd" value="all-open">
+						<input type="submit" class="btn-text btn-default" name="cmd" value="all-del">
+						<a class="btn-text btn-default" href="/admin/board/notice/reg">글쓰기</a>
+					</div>
+				</form>
 
 				<div class="margin-top align-center pager">
 
